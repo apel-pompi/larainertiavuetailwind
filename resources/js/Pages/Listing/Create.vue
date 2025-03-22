@@ -1,12 +1,13 @@
 <script setup>
 import Container from "../../Components/Container.vue";
+import breadcrumbs from '../../Components/breadcrumbs.vue'
 import Title from "../../Components/Title.vue";
 import InputField from "../../Components/InputField.vue";
 import TextArea from "../../Components/TextArea.vue";
 import ImageUpload from "../../Components/ImageUpload.vue";
 import ErrorMessages from "../../Components/ErrorMessages.vue"
 import PrimaryBtn from "../../Components/PrimaryBtn.vue";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, Head  } from "@inertiajs/vue3";
 
 
 const form = useForm({
@@ -22,8 +23,13 @@ const form = useForm({
 </script>
 
 <template>
-    <Head title="- New Listing" />
+    <Head title="Your page title" />
     <Container>
+        <breadcrumbs>
+            <div class="flex justify-between px-7 py-7 border-b last:border-b-0 border-r last:border-r-0 border-stroke dark:border-strokedark xl:border-b-0 [&>*:nth-child(3)]:sm:border-b-0">
+                <Link :href="route('listing.index')" class="px-6 py-2 rounded-lg bg-slate-950 text-white disabled:bg-slate-300 disabled:cursor-wait"><i class="fa-solid fa-backward"></i> Manage</Link>
+            </div>
+        </breadcrumbs>
         <div class="mb-6">
             <Title>Create a new listing</Title>
             <ErrorMessages :errors="form.errors" />

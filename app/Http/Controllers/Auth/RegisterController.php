@@ -13,48 +13,49 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class RegisterController extends Controller
 {
+    public function index(){
+        $user = User::with('roles')->get()->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames()->toArray(), // Get assigned roles
+            ];
+        });
+        //dd($user);
+        return Inertia::render('Auth/NewRegister',compact('user'));
+    }
+
     public function create(){
-        return Inertia::render('Auth/Register');
+        $roles = Role::all();
+        return Inertia::render('Auth/Register',[
+            'roles'=>$roles
+        ]);
     }
 
     public function store(Request $request){
+        
         $credentials = $request->validate([
             'name' => 'required|max:255',
+            'username' => 'required|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:3',
+            'selectedrole' => 'required'
         ]);
-
+        
         $user = User::create($credentials);
-        //send verification mail
-        event(new Registered($user));
-        Auth::login($user);
-        return redirect()->route('home');
+        $role = Role::whereIn('id',$credentials['selectedrole'])->get(['id'])->pluck('id');
+        $user->assignRole($role);
+        return redirect()->route('register.index')->with('success', 'Role Assign successfully!');
+        
     }
 
-    public function login(){
-        return Inertia::render('Auth/Login');
-    }
-
-    public function storelogin(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-
-            return redirect()->intended('dashboard');
-        }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.'
-        ])->onlyInput('email');
-    }
+    
 // logout
     public function destory(Request $request){
         {
@@ -63,7 +64,7 @@ class RegisterController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
     
-            return redirect()->route('home');
+            return redirect()->route('login');
         }
     }
 
@@ -78,7 +79,7 @@ class RegisterController extends Controller
     public function handler(EmailVerificationRequest $request)
     {
         $request->fulfill();
-        return redirect()->route('home');
+        return redirect()->route('dashboard');
     }
 
 

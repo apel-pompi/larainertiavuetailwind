@@ -8,7 +8,7 @@ defineProps({
 })
 
 const selectUser = (id) => {
-    router.get(route("home"),{
+    router.get(route("listing.index"),{
         user_id: id,
         search: params.search,
         tag:params.tag
@@ -16,7 +16,7 @@ const selectUser = (id) => {
 }
 
 const selectTag = (tag) => {
-    router.get(route("home"),{
+    router.get(route("listing.index"),{
         user_id: params.user_id,
         search: params.search,
         tag: tag

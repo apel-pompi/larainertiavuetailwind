@@ -1,20 +1,32 @@
 <script setup>
-defineProps({
+import { useToast } from 'vue-toastification';
+import { watch, computed } from 'vue';
+
+const props = defineProps({
     errors: Object,
 });
+
+const toast = useToast();
+
+// Show toast notifications for errors dynamically
+watch(() => props.errors, (newErrors) => {
+    if (Object.keys(newErrors).length > 0) {
+        Object.values(newErrors).forEach(errorMessages => {
+            if (Array.isArray(errorMessages)) {
+                errorMessages.forEach(message => toast.error(message));
+            } else {
+                toast.error(errorMessages);
+            }
+        });
+    }
+}, { deep: true });
+
+
+
+
+
 </script>
 
 <template>
-    <div class="mb-4" v-if="Object.keys(errors).length">
-        <p class="text-sm text-red-500">Something went wrong!</p>
-        <ul class="ml-4 list-disc list-inside">
-            <li
-                v-for="(error, i) in errors"
-                :key="i"
-                class="text-sm text-red-500"
-            >
-                {{ error }}
-            </li>
-        </ul>
-    </div>
+    
 </template>

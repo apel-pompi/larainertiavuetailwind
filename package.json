@@ -18,7 +18,11 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.0.2",
-        "vue": "^3.5.13"
+        "@vueuse/core": "^12.5.0",
+        "flowbite": "^3.0.0",
+        "naive-ui": "^2.41.0",
+        "sweetalert2": "^11.16.0",
+        "vue": "^3.5.13",
+        "vue-toastification": "^2.0.0-rc.5"
     }
-    
 }

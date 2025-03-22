@@ -3,20 +3,22 @@ const model = defineModel();
 
 defineProps({
     name: String,
+    value: String,
 });
 </script>
 
 <template>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 p-1 pl-5">
         <input
             type="checkbox"
             v-model="model"
             :id="name"
-            class="rounded-md border-1 outline-0 text-indigo-500 ring-indigo-500 border-slate-700"
+            :value="value"
+            
         />
         <label
             :for="name"
-            class="block text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer"
+            class="block font-medium text-slate-700 dark:text-slate-300 cursor-pointer text-title-sm"
         >
             <slot />
         </label>

@@ -22,14 +22,10 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="- Login" />
-    <Container class="w-1/2">
+    <Container>
         <div class="mb-8 text-center">
             <Title>Login to your account</Title>
-            <p>
-                Need an account?
-                <TextLink routeName="register" label="Register" />
-            </p>
+            
         </div>
 
         <!-- Errors messages -->

@@ -5,12 +5,7 @@ use App\Http\Controllers\Auth\ConfirmPasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function(){
-    // Register
-    Route::get('/register',[RegisterController::class,'create'])->name('register');
-    Route::post('/register',[RegisterController::class,'store']);
-    // login
-    Route::get('/login', [RegisterController::class, 'login'])->name('login');
-    Route::post('/login', [RegisterController::class, 'storelogin']);
+        
     //forget password
     Route::get('/forgot-password',[RegisterController::class, 'requestPass'])->name('password.request');
     Route::post('/forgot-password',[RegisterController::class, 'sendEmail'])->name('password.email');
@@ -20,6 +15,10 @@ Route::middleware('guest')->group(function(){
 });
 
 Route::middleware('auth')->group(function(){
+    // Register
+    Route::get('/newuser',[RegisterController::class,'index'])->name('register.index');
+    Route::get('/register',[RegisterController::class,'create'])->name('register.create');
+    Route::post('/register',[RegisterController::class,'store'])->name('register.store');
     // logout
     Route::post('/logout',[RegisterController::class,'destory'])->name('logout');
     //email verification

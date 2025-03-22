@@ -8,9 +8,16 @@ defineProps({
 })
 </script>
 <template>
-    <Head title="_ Profile"/>
-    <UpdateInfo :user="user" :status="status"/>
-    <UpdatePassword />
-    <DeleteAccount />
+    <div class="grid grid-cols-2 gap-4 mb-4 overflow-hidden">
+        <div class="rounded-lg">
+            <UpdateInfo :user="user" :status="status"/>
+        </div>
+        <div class="rounded-lg">
+            <UpdatePassword />
+        </div>
+    </div>
+    <div class="rounded-lg">
+        <DeleteAccount />
+    </div>
 </template>
 

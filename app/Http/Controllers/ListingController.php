@@ -3,33 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Models\Listing;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-use function Termwind\render;
 
 class ListingController extends Controller
 {
+    public $user;
+
+    public function __construct()
+    {
+        new Middleware(function ($request, $next) {
+            $this->user = Auth::guard('web')->user();
+            return $next($request);
+        });
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $user = User::all();
-        $listings = Listing::whereHas('user',function(Builder $query){
-                $query->where('role','!=','suspended');
-            })
-            ->with('user')
-            ->where('approved',true)
-            ->filter(request(['search', 'user_id','tag']))
+        // if (is_null($this->user) || !$this->user->can('listing.index')) {
+        //     abort(403, 'Sorry !! You are Unauthorized person !');
+        // }
+
+       
+        $listings = Listing::with('user')
+            ->filter(request(['search', 'user_id', 'tag']))
             ->latest()
             ->paginate(6)
             ->withQueryString();
 
-        return Inertia::render('Home', [
+        return Inertia::render('Listing/Index', [
             'listings' => $listings,
             'searchTerm' => $request->search,
         ]);

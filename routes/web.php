@@ -1,10 +1,16 @@
 <?php
 
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Route;
+
+// login
+
+Route::get('/', [AuthController::class, 'login'])->name('login');
+Route::post('/', [AuthController::class, 'storelogin']);
 
 
 Route::middleware(['auth'])->group(function(){
@@ -14,10 +20,14 @@ Route::middleware(['auth'])->group(function(){
     Route::patch('/profile', [ProfileController::class, 'updateInfo'])->name('profile.info');
     Route::put('/profile', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    Route::resource('/listing', ListingController::class);
+    Route::resource('/rolepermission', RolePermissionController::class);
 });
 
-Route::get('/', [ListingController::class, 'index'])->name('home');
-Route::resource('listing', ListingController::class)->except('index');
+
+
+
 
 
 

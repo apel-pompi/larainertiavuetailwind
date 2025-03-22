@@ -11,7 +11,7 @@ class DashboardController extends Controller
     public function index(){
         // $user = new User;
         // dd($user->getAllControllers());
-        
+        //dd(session()->all());
         return Inertia::render('Dashboard');
     }
 }

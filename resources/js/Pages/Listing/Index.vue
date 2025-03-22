@@ -1,8 +1,9 @@
 <script setup>
-import Card from '../Components/Card.vue'
-import PaginationLinks from '../Components/PaginationLinks.vue'
-import InputField from "../Components/InputField.vue";
-import SelectField from "../Components/SelectField.vue";
+import Container from "../../Components/Container.vue";
+import Card from '../../Components/Card.vue'
+import PaginationLinks from '../../Components/PaginationLinks.vue'
+import InputField from "../../Components/InputField.vue";
+import breadcrumbs from '../../Components/breadcrumbs.vue'
 import { router, useForm } from "@inertiajs/vue3";
 
 const params = route().params;
@@ -20,7 +21,7 @@ const form = useForm({
 
 
 const search = () => {
-    router.get(route("dashboard"), { 
+    router.get(route("listing.index"), { 
         search: form.search,
         user_id: params.user_id, 
         tag:params.tag
@@ -28,7 +29,7 @@ const search = () => {
 };
 
 const selectTag = (tag) => {
-    router.get(route("dashboard"),{
+    router.get(route("listing.index"),{
         user_id: params.user_id, 
         search: params.search,
         tag:tag
@@ -38,30 +39,32 @@ const selectTag = (tag) => {
 </script>
 
 <template>
-    <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
-            <div class="flex justify-between px-7.5 py-7 border-b last:border-b-0 border-r last:border-r-0 border-stroke dark:border-strokedark xl:border-b-0 [&>*:nth-child(3)]:sm:border-b-0">adasd</div>
-        </div>
-    </div>
+    <Container>
+        <breadcrumbs>
+            <div class="flex justify-between px-7 py-7 border-b last:border-b-0 border-r last:border-r-0 border-stroke dark:border-strokedark xl:border-b-0 [&>*:nth-child(3)]:sm:border-b-0">
+                <Link :href="route('listing.create')" class="px-6 py-2 rounded-lg bg-slate-950 text-white disabled:bg-slate-300 disabled:cursor-wait"><i class="fa-solid fa-plus"></i> Create</Link>
+            </div>
+        </breadcrumbs>
+    
     <!-- search filter -->
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
             <Link 
-                v-if="params.tag" :href="route('dashboard',{...params, tag:null,page:null})"
+                v-if="params.tag" :href="route('listing.index',{...params, tag:null,page:null})"
                 class="px-2 py-1 rounded-md bg-indigo-500 text-white flex items-center gap-2"
                 >
                 {{ params.tag }}
                 <i class="fa-solid fa-xmark"></i>
             </Link>
             <Link 
-                v-if="params.search" :href="route('dashboard',{...params, search:null,page:null})"
+                v-if="params.search" :href="route('listing.index',{...params, search:null,page:null})"
                 class="px-2 py-1 rounded-md bg-indigo-500 text-white flex items-center gap-2"
                 >
                 {{ params.search }}
                 <i class="fa-solid fa-xmark"></i>
             </Link>
             <Link 
-                v-if="params.user_id" :href="route('dashboard',{...params, user_id : null, page : null})"
+                v-if="params.user_id" :href="route('listing.index',{...params, user_id : null, page : null})"
                 class="px-2 py-1 rounded-md bg-indigo-500 text-white flex items-center gap-2"
                 >
                 {{ username }}
@@ -88,4 +91,5 @@ const selectTag = (tag) => {
         </div>
     </div>
     <div v-else>There are no listings</div>
+</Container>
 </template>

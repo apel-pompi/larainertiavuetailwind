@@ -16,6 +16,7 @@ const deleteListing = () => {
 
 <template>
     <Head title="- Listing Detail" />
+    
     <Container class="flex gap-4">
         <div class="w-1/4 rounded-md overflow-hidden">
             <img
@@ -81,7 +82,7 @@ const deleteListing = () => {
                     <i class="fa-solid fa-user"></i>
                     <p>Listed by:</p>
                     <Link
-                        :href="route('home', { user_id: user.id })"
+                        :href="route('listing.index', { user_id: user.id })"
                         class="text-link"
                     >
                         {{ user.name }}
@@ -96,7 +97,7 @@ const deleteListing = () => {
                 <div class="flex items-center gap-3">
                     <div v-for="tag in listing.tags.split(',')" :key="tag">
                         <Link
-                            :href="route('home', { tag })"
+                            :href="route('listing.index', { tag })"
                             class="bg-slate-500 text-white px-2 py-px rounded-full hover:bg-slate-700 dark:hover:bg-slate-900"
                         >
                             {{ tag }}
