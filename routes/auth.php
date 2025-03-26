@@ -19,6 +19,8 @@ Route::middleware('auth')->group(function(){
     Route::get('/newuser',[RegisterController::class,'index'])->name('register.index');
     Route::get('/register',[RegisterController::class,'create'])->name('register.create');
     Route::post('/register',[RegisterController::class,'store'])->name('register.store');
+    Route::get('/newuser/{id}/edit',[RegisterController::class,'edit'])->name('register.edit');
+    Route::post('/newuser/{id}/edit',[RegisterController::class,'update'])->name('register.update');
     // logout
     Route::post('/logout',[RegisterController::class,'destory'])->name('logout');
     //email verification

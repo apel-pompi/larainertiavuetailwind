@@ -17,6 +17,7 @@ class PermissionGroupModelSeeder extends Seeder
             ['name' => 'Branch'],
             ['name' => 'Users'],
             ['name' => 'Role'],
+            ['name' => 'Permission'],
             ['name' => 'Profile'],
             ['name' => 'Listing']
         ];

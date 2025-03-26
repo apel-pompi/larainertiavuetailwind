@@ -4,18 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Models\PermissionGroupModel;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Auth;
 
 class RolePermissionController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        if (is_null(Auth::user()) || ! Auth::user()->can('role.index')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
         // Get the search query from the request
         $searchQuery = $request->input('search', '');
 
@@ -24,7 +29,7 @@ class RolePermissionController extends Controller
             ->when($searchQuery, fn($query) => 
                 $query->where('name', 'like', "%{$searchQuery}%")
             )
-            ->paginate(3)
+            ->paginate(5)
             ->through(fn($role) => [
                 'roleid' => $role->id,
                 'rolename' => $role->name,
@@ -47,6 +52,10 @@ class RolePermissionController extends Controller
      */
     public function create()
     {   
+        if (is_null(Auth::user()) || ! Auth::user()->can('role.create')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
         $permission=PermissionGroupModel::with('permissions')->get();
         return Inertia::render('RolePermission/Create',[
             'items' => $permission,
@@ -58,6 +67,10 @@ class RolePermissionController extends Controller
      */
     public function store(Request $request)
     {
+        if (is_null(Auth::user()) || ! Auth::user()->can('role.store')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
         $validated = $request->validate([
             'rolename' => 'required',
         ]);
@@ -77,6 +90,10 @@ class RolePermissionController extends Controller
      */
     public function edit($id)
     {
+        if (is_null(Auth::user()) || ! Auth::user()->can('role.edit')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
         // Fetch all permission groups with their permissions
         $permission = PermissionGroupModel::with('permissions')->get()
         ->map(fn($group) => [
@@ -115,6 +132,10 @@ class RolePermissionController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (is_null(Auth::user()) || ! Auth::user()->can('role.update')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
         $role = Role::findOrFail($id);
 
         $request->validate([
@@ -137,6 +158,10 @@ class RolePermissionController extends Controller
      */
     public function destroy($id)
     {
+        if (is_null(Auth::user()) || ! Auth::user()->can('role.destory')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
         $role = Role::findOrFail($id);
 
         // Prevent deleting essential roles (Optional)

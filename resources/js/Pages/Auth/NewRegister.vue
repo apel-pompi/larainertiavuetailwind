@@ -1,6 +1,7 @@
 <script setup>
 import Container from '../../Components/Container.vue';
 import Title from '../../Components/Title.vue';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     user: Array,
@@ -39,9 +40,10 @@ const props = defineProps({
                         </span>
                     </div>
                     <div class="p-2">
-                        <a class="inline-flex justify-center py-2 px-4 mr-1 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <Link :href="route('register.edit', users.id)" class="inline-flex justify-center py-2 px-4 mr-1 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                         Edit
-                        </a>
+                        </Link>
+
                     </div>
                 </div>
             </div>

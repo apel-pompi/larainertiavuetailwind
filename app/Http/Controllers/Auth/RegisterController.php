@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -17,7 +16,13 @@ use Spatie\Permission\Models\Role;
 
 class RegisterController extends Controller
 {
+    
     public function index(){
+
+        if (is_null(Auth::user()) || ! Auth::user()->can('users.index')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+ 
         $user = User::with('roles')->get()->map(function ($user) {
             return [
                 'id' => $user->id,
@@ -27,11 +32,16 @@ class RegisterController extends Controller
                 'roles' => $user->getRoleNames()->toArray(), // Get assigned roles
             ];
         });
-        //dd($user);
+
         return Inertia::render('Auth/NewRegister',compact('user'));
     }
 
     public function create(){
+
+        if (is_null(Auth::user()) || ! Auth::user()->can('users.create')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
         $roles = Role::all();
         return Inertia::render('Auth/Register',[
             'roles'=>$roles
@@ -39,7 +49,11 @@ class RegisterController extends Controller
     }
 
     public function store(Request $request){
-        
+
+        if (is_null(Auth::user()) || ! Auth::user()->can('users.store')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
         $credentials = $request->validate([
             'name' => 'required|max:255',
             'username' => 'required|max:255',
@@ -54,11 +68,63 @@ class RegisterController extends Controller
         return redirect()->route('register.index')->with('success', 'Role Assign successfully!');
         
     }
+    //Edit 
+    public function edit($id){
 
-    
+        if (is_null(Auth::user()) || ! Auth::user()->can('users.edit')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
+        $user = User::with('roles')->where('id', $id)->first();
+        if ($user) {
+            $user = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames()->toArray(), // Get assigned roles
+            ];
+        }
+        return Inertia::render('Auth/RegisterEdit',[
+            'user' => $user,
+            'roles' => Role::pluck('id','name')
+        ]);
+    }
+
+    public function update(Request $request, string $id){
+
+        if (is_null(Auth::user()) || ! Auth::user()->can('users.update')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'username' => 'required|max:255',
+            'email' => 'required|email|unique:users,email,' . $id, // Ignore the current user's email
+            'password' => 'nullable|confirmed|min:3', // Password is optional
+            'selectedrole' => 'required|array' // Ensure roles are in an array
+        ]);
+
+        $user->update([
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => $validated['password'] ? bcrypt($validated['password']) : $user->password // Update only if provided
+        ]);
+        $user->syncRoles($validated['selectedrole']);
+        return redirect()->route('register.index')->with('flash', [
+            'success' => 'User created and roles assigned successfully!'
+        ]);
+    }
 // logout
     public function destory(Request $request){
         {
+            if (is_null(Auth::user()) || ! Auth::user()->can('users.destory')) {
+                abort(403, 'Sorry !! You are Unauthorized person !');
+            }
+
             Auth::logout();
     
             $request->session()->invalidate();

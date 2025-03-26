@@ -12,26 +12,16 @@ use Inertia\Inertia;
 
 class ListingController extends Controller
 {
-    public $user;
-
-    public function __construct()
-    {
-        new Middleware(function ($request, $next) {
-            $this->user = Auth::guard('web')->user();
-            return $next($request);
-        });
-    }
-
+    
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        // if (is_null($this->user) || !$this->user->can('listing.index')) {
-        //     abort(403, 'Sorry !! You are Unauthorized person !');
-        // }
+        if (is_null(Auth::user()) || ! Auth::user()->can('listing.index')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
 
-       
         $listings = Listing::with('user')
             ->filter(request(['search', 'user_id', 'tag']))
             ->latest()
@@ -49,6 +39,10 @@ class ListingController extends Controller
      */
     public function create()
     {
+        if (is_null(Auth::user()) || ! Auth::user()->can('listing.create')) {
+            abort(403, 'Sorry !! You are Unauthorized person !');
+        }
+
         return Inertia::render('Listing/Create');
     }
 

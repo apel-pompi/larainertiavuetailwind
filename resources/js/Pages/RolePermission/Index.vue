@@ -2,6 +2,7 @@
 import { ref, watch  } from 'vue';
 import Container from "../../Components/Container.vue";
 import Title from "../../Components/Title.vue";
+import PaginationLinks from '../../Components/PaginationLinks.vue'
 import { router, useForm } from '@inertiajs/vue3';
 import { useToast } from 'vue-toastification';
 
@@ -190,17 +191,8 @@ const deleteRole = (roleId, rolename) => {
                 </div>
             </div>
             <!-- Pagination Links -->
-            <div class="flex justify-center mt-4">
-                <nav class="inline-flex rounded-md shadow-sm">
-                    <Link 
-                            v-for="link in roles.links"
-                            :key="link.label"
-                            :href="link.url"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
-                            :class="{ 'bg-indigo-50 text-indigo-600': link.active }"
-                            v-html="link.label"
-                        />
-                </nav>
+            <div class="mt-8">
+                <PaginationLinks :paginator="roles"/>
             </div>
         </div>
     </Container>
